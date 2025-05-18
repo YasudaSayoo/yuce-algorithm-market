@@ -19,23 +19,19 @@
   <n-layout class="h-screen">
     <n-layout-header class="h-[30px]" bordered> aaaa </n-layout-header>
     <n-layout position="absolute" class="top-[30px]! bottom-[30px]!" has-sider>
-      <n-layout-sider
-        :native-scrollbar="false"
-        show-trigger
-        collapse-mode="width"
-        :collapsed-width="64"
-        :width="240"
-        bordered
-      >
+      <n-layout-sider :native-scrollbar="false" show-trigger collapse-mode="width" :collapsed-width="64" :width="240"
+        bordered>
         <!-- <n-menu :collapsed-width="64" :collapsed-icon-size="22" :options="menuOptions" /> -->
         <n-menu :options="menuOptions" :default-expanded-keys="defaultExpandedKeys" accordion />
       </n-layout-sider>
       <n-layout :native-scrollbar="false">
-        <pre
-          >{{ model }}
+
+        <!-- 路由内容显示区域 -->
+        <router-view />
+
+        <!-- <pre>{{ model }}
         </pre>
-        <n-form ref="formRef" :model="model" label-placement="left" label-width="auto" size="small">
-          <!-- require-mark-placement="right-hanging" -->
+        <n-form ref="formRef" :model="model" require-mark-placement="right-hanging" label-placement="left" label-width="auto" size="small">
           <n-form-item label="开奖:" path="kaiJiang">
             <n-radio-group v-model:value="model.gameId" name="radiogroup1">
               <n-radio v-for="r in kaiJiangRadios" :value="r.gameId">{{ r.label }}</n-radio>
@@ -50,7 +46,7 @@
           <n-button type="primary" @click="fetchAlgorithmMarket"> Primary </n-button>
         </n-form>
 
-        <n-card title="卡片"> 卡片内容 </n-card>
+        <n-card title="卡片"> 卡片内容 </n-card> -->
       </n-layout>
     </n-layout>
     <n-layout-footer position="absolute" class="h-[30px]" bordered> 城府路 </n-layout-footer>
@@ -98,10 +94,33 @@ const menuOptions: MenuOption[] = [
         key: 'add-algorithm'
       },
       {
-        label: '算法交易市场',
+        label: () =>
+          h(
+            RouterLink,
+            {
+              to: {
+                path: '/algorithm-market'
+              }
+            },
+            { default: () => '算法交易市场' }
+          ),
         key: 'algorithm-market'
       }
     ]
+  },
+  {
+    label: () =>
+      h(
+        RouterLink,
+        {
+          to: {
+            path: '/forecast'
+          }
+        },
+        { default: () => '算法预测' }
+      ),
+    key: 'forecast',
+    icon: renderIcon(CartIcon)
   },
   {
     label: '走势、趋势',
@@ -193,39 +212,6 @@ const methods = ref([
   }
 ])
 
-const model = ref({
-  gameId: 5,
-  yuceInfoId: null
-})
-
-const fetchAlgorithmMarket = async () => {
-  const data = unref(model)
-  console.log('data', data)
-
-  const params = new URLSearchParams()
-  params.append('gameId', String(data.gameId))
-  params.append('yuceInfoId', data.yuceInfoId ?? '')
-  // for (const key in data) {
-  //   if (Object.prototype.hasOwnProperty.call(data, key)) {
-  //     console.log(key, data[key])
-  //   }
-  // }
-  const url = `https://www.yuce2.com/api/custom/customSellSuanFas?${params}`
-  console.log(url)
-
-  const response = await fetch(url, {
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/x-www-form-urlencoded'
-    }
-  })
-  if (!response.ok) {
-    throw new Error(response.statusText)
-  }
-
-  const json = await response.json()
-  console.log('json', json)
-}
 
 // export default defineComponent({
 //   setup() {
