@@ -17,39 +17,30 @@
     <n-layout-footer bordered position="absolute"> Footer Footer Footer </n-layout-footer>
   </n-layout> -->
   <n-layout class="h-screen">
-    <n-layout-header class="h-[30px]" bordered> aaaa </n-layout-header>
-    <n-layout position="absolute" class="top-[30px]! bottom-[30px]!" has-sider>
-      <n-layout-sider :native-scrollbar="false" show-trigger collapse-mode="width" :collapsed-width="64" :width="240"
-        bordered>
+    <n-layout-header class="h-[30px]" bordered>预测</n-layout-header>
+    <n-layout position="absolute" class="top-[30px]!" has-sider>
+      <n-layout-sider
+        :native-scrollbar="false"
+        show-trigger
+        collapse-mode="width"
+        :collapsed-width="64"
+        :width="240"
+        bordered
+      >
         <!-- <n-menu :collapsed-width="64" :collapsed-icon-size="22" :options="menuOptions" /> -->
         <n-menu :options="menuOptions" :default-expanded-keys="defaultExpandedKeys" accordion />
       </n-layout-sider>
       <n-layout :native-scrollbar="false">
-
         <!-- 路由内容显示区域 -->
-        <router-view />
-
-        <!-- <pre>{{ model }}
-        </pre>
-        <n-form ref="formRef" :model="model" require-mark-placement="right-hanging" label-placement="left" label-width="auto" size="small">
-          <n-form-item label="开奖:" path="kaiJiang">
-            <n-radio-group v-model:value="model.gameId" name="radiogroup1">
-              <n-radio v-for="r in kaiJiangRadios" :value="r.gameId">{{ r.label }}</n-radio>
-            </n-radio-group>
-          </n-form-item>
-          <n-form-item label="方法:" path="method">
-            <n-radio-group v-model:value="model.yuceInfoId" name="method">
-              <n-radio v-for="m in methods" :value="m.yuceInfoId">{{ m.label }}</n-radio>
-            </n-radio-group>
-          </n-form-item>
-
-          <n-button type="primary" @click="fetchAlgorithmMarket"> Primary </n-button>
-        </n-form>
-
-        <n-card title="卡片"> 卡片内容 </n-card> -->
+        <n-message-provider>
+          <n-dialog-provider>
+            <router-view />
+          </n-dialog-provider>
+        </n-message-provider>
+        <!-- <router-view /> -->
       </n-layout>
     </n-layout>
-    <n-layout-footer position="absolute" class="h-[30px]" bordered> 城府路 </n-layout-footer>
+    <!-- <n-layout-footer position="absolute" class="h-[30px]" bordered> 城府路 </n-layout-footer> -->
   </n-layout>
 </template>
 
@@ -84,6 +75,19 @@ const menuOptions: MenuOption[] = [
   //   key: 'go-back-home',
   //   icon: renderIcon(HomeIcon)
   // },
+  {
+    label: () =>
+      h(
+        RouterLink,
+        {
+          to: {
+            path: '/login'
+          }
+        },
+        { default: () => '登录' }
+      ),
+    key: 'login'
+  },
   {
     label: '自定义算法',
     key: 'diy-algorithm',
@@ -211,7 +215,6 @@ const methods = ref([
     label: '波色'
   }
 ])
-
 
 // export default defineComponent({
 //   setup() {
