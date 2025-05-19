@@ -5,9 +5,9 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vue-tsc && vite build && electron-builder",
+    "build": "vite build && electron-builder",
     "preview": "vite preview",
-    "build:win": "vue-tsc && vite build && electron-builder --win",
+    "build:win": "vite build && electron-builder --win",
     "build:mac": "vue-tsc && vite build && electron-builder --mac"
   },
   "dependencies": {

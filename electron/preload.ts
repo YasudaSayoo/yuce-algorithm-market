@@ -22,3 +22,5 @@ contextBridge.exposeInMainWorld('ipcRenderer', {
   // You can expose other APTs you need here.
   // ...
 })
+
+console.log('[preload] ipcRenderer exposed to window')

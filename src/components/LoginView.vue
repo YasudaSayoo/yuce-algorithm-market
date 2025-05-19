@@ -1,13 +1,6 @@
 <template>
   <div class="flex items-center justify-center min-h-screen">
-    <n-form
-      v-if="!localToken"
-      class="w-1/2"
-      ref="loginRef"
-      :label-width="80"
-      :model="loginForm"
-      :rules="rules"
-    >
+    <n-form v-if="!localToken" class="w-1/2" ref="loginRef" :label-width="80" :model="loginForm" :rules="rules">
       <n-form-item label="用户" path="loginUser">
         <n-input v-model:value="loginForm.loginUser" placeholder="输入用户" />
       </n-form-item>
@@ -22,13 +15,12 @@
   </div>
   <pre>
   {{ JSON.stringify(loginForm, null, 2) }}
-</pre
-  >
+</pre>
 </template>
 
 <script setup lang="ts">
 import { FormInst, useMessage } from 'naive-ui'
-import { ref, toRaw, unref } from 'vue'
+import { onMounted, ref, toRaw, unref } from 'vue'
 
 const loginRef = ref<FormInst | null>(null)
 const message = useMessage()
@@ -52,6 +44,11 @@ const loginForm = ref({
   loginPass: ''
 })
 
+onMounted(async () => {
+  await loadToken()
+})
+
+// save token
 const handleValidateClick = async (e: MouseEvent) => {
   console.log('click')
   e.preventDefault()
@@ -77,11 +74,19 @@ const handleValidateClick = async (e: MouseEvent) => {
         // todo save token
         const token = data.data
         localToken.value = token
+
+        await window.ipcRenderer.invoke('fs:save-token', token)
         console.log('token', token)
       }
     }
   } catch (error) {
     console.error(error)
   }
+}
+
+// load local token
+const loadToken = async () => {
+  const data = await window.ipcRenderer.invoke('fs:load-token')
+  localToken.value = data.token
 }
 </script>

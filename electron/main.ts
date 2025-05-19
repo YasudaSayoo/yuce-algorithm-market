@@ -1,9 +1,10 @@
-import { app, BrowserWindow } from 'electron'
-// import { createRequire } from 'node:module'
+import { app, BrowserWindow, ipcMain } from 'electron'
+import { createRequire } from 'node:module'
 import { fileURLToPath } from 'node:url'
 import * as path from 'node:path'
+import * as fs from 'node:fs'
 
-// const require = createRequire(import.meta.url)
+const require = createRequire(import.meta.url)
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
 // The built directory structure
@@ -33,6 +34,8 @@ function createWindow() {
     icon: path.join(process.env.VITE_PUBLIC, 'electron-vite.svg'),
     webPreferences: {
       preload: path.join(__dirname, 'preload.mjs'),
+      contextIsolation: true, // 必须启用
+      nodeIntegration: false, // 必须禁用
       sandbox: false,
       devTools: !app.isPackaged
     }
@@ -69,6 +72,23 @@ app.on('activate', () => {
   if (BrowserWindow.getAllWindows().length === 0) {
     createWindow()
   }
+})
+
+// ipcMain
+// token json
+const tokenName = 'yuce-token.json'
+const tokenPath = path.join(app.getPath('userData'), tokenName)
+
+ipcMain.handle('fs:load-token', () => {
+  if (!fs.existsSync(tokenPath)) {
+    fs.writeFileSync(tokenPath, '{}', 'utf-8')
+  }
+  return JSON.parse(fs.readFileSync(tokenPath, 'utf-8'))
+})
+
+ipcMain.handle('fs:save-token', (_event, token: string) => {
+  const json = { token }
+  fs.writeFileSync(tokenPath, JSON.stringify(json, null, 2), 'utf-8')
 })
 
 app.whenReady().then(createWindow)
